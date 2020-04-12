@@ -1,0 +1,40 @@
+CREATE DATABASE db_books;
+USE db_books;
+
+CREATE TABLE tbl_topics (topic_id  TINYINT CHECK(Age >0 AND Age < 127), topic_name  VARCHAR (100));
+DESCRIBE tbl_topics;
+
+CREATE TABLE  tbl_books (b_id VARCHAR (17), b_name VARCHAR(255) NOT NULL,b_author VARCHAR(255), b_topic INT,  b_price DECIMAL(10,2));
+DESCRIBE tbl_books;
+SHOW TABLES;
+
+ALTER TABLE tbl_books ADD PRIMARY KEY (b_id);
+
+ALTER TABLE tbl_books CHANGE b_topic b_topic TINYINT;
+ALTER TABLE tbl_books MODIFY b_topic TINYINT NOT NULL;
+ALTER TABLE tbl_topics MODIFY topic_id TINYINT NOT NULL;
+ALTER TABLE tbl_topics ADD PRIMARY KEY (topic_id);
+ALTER TABLE tbl_books ADD FOREIGN KEY (b_topic) REFERENCES tbl_topics (topic_id);
+
+ALTER TABLE tbl_topics ADD UNIQUE (topic_name);
+
+INSERT tbl_topics(topic_id, topic_name) VALUES (0,'Classic');
+INSERT tbl_topics(topic_id, topic_name) VALUES (1,'Lyrics');
+INSERT tbl_topics(topic_id, topic_name) VALUES (2,'Memoirs');
+INSERT tbl_topics(topic_id, topic_name) VALUES (3,'Psychology');
+INSERT tbl_topics(topic_id, topic_name) VALUES (4,'Philosophy');
+SELECT * FROM tbl_topics;
+
+INSERT tbl_books(b_id, b_name, b_author, b_topic, b_price) VALUES ('10002', 'Two captains','Alexandrovich Kaverin', 0, 125.15);
+INSERT tbl_books(b_id, b_name, b_author, b_topic, b_price) VALUES ('10005', 'Psychology of influence','Robert Cialdini', 3, 75.26);
+INSERT tbl_books(b_id, b_name, b_author, b_topic) VALUES ('10011', 'How to stop worrying and start living','Dale Carnegie', 3);
+INSERT tbl_books(b_id, b_name, b_author, b_topic, b_price) VALUES ('10412', 'My life is that robot','Henry Ford', 2, 652.75);
+INSERT tbl_books(b_id, b_name, b_author, b_topic, b_price) VALUES ('10507', 'Commendable word of stupidity','Erasmus of Rotterdam', 4, 312.00);
+SELECT * FROM tbl_books;
+
+UPDATE tbl_books SET b_price = b_price*1.1;
+SELECT * FROM tbl_books;
+
+DELETE FROM tbl_books WHERE b_price IS NULL;
+
+
