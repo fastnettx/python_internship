@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="{% static 'style.css' %}" rel="stylesheet">
+    <title>My Django</title>
+</head>
+
+<body>
+<div>
+    <h1>
+        The first site in Django.
+    </h1>
+    <h2>
+        Select the desired item.
+    </h2>
+    <ul>
+        <li><a href="/staticUrl/">Go to static URL</a></li>
+        <li><a href="/dynamicUrl/">Go to dynamic URL</a></li>
+        <li><a href="/static/style.css">Go to style site</a></li>
+        <li><a href="/media/logo.jpg">Go to picture</a></li>
+    </ul>
+</div>
+</body>
+</html>
