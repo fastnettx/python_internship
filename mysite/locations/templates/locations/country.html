@@ -1,0 +1,18 @@
+{% extends  'base.html' %}
+
+{% block page_title%}{{country.name}}{% endblock %}
+{% block extra_styles%}{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <h1>{{country.name}}</h1>
+</div>
+<h2>
+    {% for item in city %}
+    <ul>
+        <li>
+            <a class="col-3 nav-link" href="{% url 'detail_city' country.id item.id %}">{{ item.name }}</a>
+        </li>
+    </ul>
+    {% endfor %}
+</h2>
+{% endblock %}

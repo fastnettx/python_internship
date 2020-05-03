@@ -2,7 +2,7 @@ body {
     margin: 0;
     padding: 0;
     font-family: sans-serif;
-    background-color: #b9c783;
+    background-color: #FFF2D6;
 }
 
 div {
@@ -10,10 +10,35 @@ div {
 }
 
 h1 {
-    font-size: 50px;
-    color: blue;
+    font-size: 36px;
+    color: #38B2CE;
 }
 
 li {
      margin: 10px;
+}
+
+.nav-link {
+    margin: 15px;
+    background-color: #60B9CE;
+    color: #f4f4f4;
+    cursor: pointer;
+    font-size: 18px;
+    text-align: center;
+}
+
+button {
+    margin: 20px;
+}
+
+.image{
+    height: 50px;
+}
+.country{
+    font-size: 14px;
+}
+
+.hidden{
+    display: none;
+    margin: 0;
 }
