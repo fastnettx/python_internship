@@ -1,5 +1,5 @@
 {% extends  'base.html' %}
-{%load mysite_extras%}
+{% load mysite_extras%}
 
 {% block page_title%}List of countries{% endblock %}
 {% block extra_styles%}{% endblock %}
@@ -7,33 +7,41 @@
 <div class="row justify-content-center">
     <h1>Choose your country</h1>
 </div>
-<h2>
-    {% for count in list_counries %}
-    <ul>
-        <li>
-            <div class="row">
-                <a class="col-4 nav-link" href="{% url 'detail_counries' count.id %}">{{ count.name }}</a>
-                {%for flags in flag%}
-                {%if flags.id == count.flag_id%}
-                <img class="col-2  image" src="{{flags.image.url}}" alt="">
-                {% endif %}
-                {% endfor %}
-            </div>
-            <div class="row country">
-                {{count.description|slice:300}} <div class="hidden" id="{{count.id}}">{{count.description|after_slice:300}}</div>
-                <input type="button" value=" ... " onclick="show{{count.id}}()">
-            </div>
 
-        </li>
-    </ul>
-    {% endfor %}
-</h2>
+{% for country in list_counries %}
+<ul>
+    <li>
+        <div class="row">
+            <a class="col-3 nav-link" href="{% url 'detail_counries' country.id %}">{{ country.name }}</a>
+            <img class="col-1  image" src="{{ country.flag.image.url }}" alt="">
+            <div class="col-1">
+            </div>
+            <a class="col-2 nav-link" href="{% url 'edit_country' country.id %}">Edit country</a>
+        </div>
+        <div class="row country">
+            {{ country.description|slice:300 }}
+            <div class="hidden" id="{{country.id}}">{{ country.description|after_slice:300 }}</div>
+            <input type="button" value=" ... " onclick="show{{country.id}}()">
+        </div>
+    </li>
+</ul>
+{% endfor %}
+<div class="row justify-content-left">
+    <a class="col-4 nav-link" href="{% url 'add_country' '_country' %}">Add Country</a>
+</div>
+
 {% endblock %}
 {% block extra_scripts %}
 <script>
-{% for count in list_counries %}
-    function show{{count.id}}() {document.getElementById("{{count.id}}").style.display="block"}
+{% for country in list_counries %}
+    function show{{ country.id }}() { document.getElementById("{{ country.id }}").style.display="block" }
 {% endfor %}
+
+
+
+
+
+
 </script>
 
 {% endblock %}

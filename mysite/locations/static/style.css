@@ -6,7 +6,7 @@ body {
 }
 
 div {
-    margin: 20px;
+    margin: 10px;
 }
 
 h1 {
@@ -34,6 +34,13 @@ button {
 .image{
     height: 50px;
 }
+
+.image-title{
+display: block;
+      margin: 0 auto;
+    height: 20px;
+}
+
 .country{
     font-size: 14px;
 }
@@ -41,4 +48,9 @@ button {
 .hidden{
     display: none;
     margin: 0;
+}
+
+.upload{
+border: 1px solid #007bff;
+padding: 5px;
 }

@@ -1,19 +1,19 @@
 {% extends  'base.html' %}
 
-{% block page_title%}{{city.name}}{% endblock %}
+{% block page_title%}{{ city.name }}{% endblock %}
 {% block extra_styles%}{% endblock %}
 {% block content %}
 <form action="{% url 'detail_counries' country.id %}" method="post">
     {% csrf_token %}
-    <input type="hidden" name="city_name" value="{{city.id}}">
+    <input type="hidden" name="city_id" value="{{ city.id }}">
     <div class="row justify-content-left">
         <div class="col-2">
-            <h1> {{city.name}} </h1>
+            <h1> {{ city.name }} </h1>
         </div>
         <div class="col-4">
             <h4>
-                <p>Longitude: {{city.longitude}}</p>
-                <p>Latitude: {{city.latitude}} </p>
+                <p>Longitude: {{ city.longitude }}</p>
+                <p>Latitude: {{ city.latitude }} </p>
             </h4>
         </div>
         <div class="col-2">

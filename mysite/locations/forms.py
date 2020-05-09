@@ -1,8 +1,20 @@
 from django import forms
-from django.contrib.auth.models import User
+from .models import Country, City, Symbol
 
 
-class SignUpForm(forms.ModelForm):
+class AddCountry(forms.ModelForm):
     class Meta:
-        model = User
-        fields = ('username', 'password', 'email')
+        model = Country
+        fields = '__all__'
+
+
+class AddCity(forms.ModelForm):
+    class Meta:
+        model = City
+        fields = ('name', 'longitude', 'latitude')
+
+
+class AddSymbol(forms.ModelForm):
+    class Meta:
+        model = Symbol
+        fields = ('image',)
