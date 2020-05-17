@@ -37,10 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crispy_forms',
     'locations',
+    'locations_api',
+    'rest_framework',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
-LOGIN_REDIRECT_URL = '/list_of_counries/'
+LOGIN_REDIRECT_URL = '/locations/list_of_counries/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -54,7 +56,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'mysite.urls'
-TEMPLATES_DIR = 'locations/templates/'
+TEMPLATES_DIR = 'templates/'
 
 TEMPLATES = [
     {

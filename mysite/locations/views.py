@@ -82,7 +82,7 @@ def add_city(request, country_id, add_city):
             post = form_city.save(commit=False)
             post.country_id = country_id
             post.save()
-            return redirect('/list_of_counries/' + str(country_id))
+            return redirect('/locations/list_of_counries/' + str(country_id))
     else:
         form_city = AddCity()
     return render(request, 'locations/add_city.html', {'form': form_city, 'country_id': country_id})
@@ -95,7 +95,7 @@ def edit_city(request, country_id, city_id):
         form = AddCity(request.POST, instance=post)
         if form.is_valid():
             form.save()
-            return redirect('/list_of_counries/' + str(country_id))
+            return redirect('/locations/list_of_counries/' + str(country_id))
     else:
         form = AddCity(instance=post)
     return render(request, 'locations/edit_city.html', {'form': form, "post": post})
@@ -107,7 +107,7 @@ def upload_flag(request):
         form = AddSymbol(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-        return redirect('/list_of_counries/add_country')
+        return redirect('/locations/list_of_counries/add_country')
     else:
         form = AddSymbol()
     return render(request, 'locations/upload_flag.html', {'form': form})

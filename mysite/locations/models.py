@@ -15,7 +15,6 @@ class Symbol(models.Model):
         verbose_name_plural = "flags"
 
 
-
 class Country(models.Model):
     name = models.CharField(max_length=100, null=False, blank=False)
     description = models.TextField(null=True)
