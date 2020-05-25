@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'locations',
     'locations_api',
     'rest_framework',
+    'django_filters',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -57,6 +58,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'mysite.urls'
 TEMPLATES_DIR = 'templates/'
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}
 
 TEMPLATES = [
     {
