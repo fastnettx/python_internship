@@ -1,61 +1,95 @@
-from requests import Response
-from rest_framework import viewsets, permissions, generics, status
-from .serializers import (CountrySerializer, CitySerializer, CityFilterSerializer, CountryDetailSerializer,
-                          TestFiltersSerializer)
+from rest_framework import viewsets, permissions, generics, views
+from rest_framework.permissions import AllowAny
+from django.contrib.auth.models import User
+from django.contrib.auth.base_user import BaseUserManager
+from django.contrib.auth.hashers import make_password
+import requests
+from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.utils import json
+from .serializers import (CountrySerializer, CitySerializer, CityFilterSerializer,
+                          CountryDetailSerializer, FilterCitySerializer, UserSerializer, GoogleSerializer)
 from django_filters.rest_framework import DjangoFilterBackend
 from locations.models import Country, City
 
 
-class CityFilterSet(viewsets.ModelViewSet):
+class CreateUserAPIView(generics.CreateAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [AllowAny, ]
+
+
+class SignInGoogleAPIView(generics.GenericAPIView):
+    serializer_class = GoogleSerializer
+    permission_classes = [AllowAny, ]
+
+    def post(self, request):
+        payload = {'access_token': request.data['token']}
+        r = requests.get('https://www.googleapis.com/oauth2/v2/userinfo', params=payload)
+        data = json.loads(r.text)
+        if 'error' in data:
+            content = {'message': 'incorrect access token data'}
+            return Response(content)
+        try:
+            user = User.objects.get(email=data['email'])
+        except User.DoesNotExist:
+            user = User()
+            name = data['email']
+            user.username = name[:name.find('@')]
+            user.password = make_password(BaseUserManager().make_random_password())
+            user.email = data['email']
+            user.save()
+
+        token = RefreshToken.for_user(user)
+        response_user = {}
+        response_user['username'] = user.username
+        response_user['email'] = user.email
+        response_user['access_token'] = str(token.access_token)
+        response_user['refresh_token'] = str(token)
+        return Response(response_user)
+
+
+class CityFilterViewSet(viewsets.ModelViewSet):
     queryset = City.objects.all()
     serializer_class = CityFilterSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['country', ]
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = [permissions.IsAuthenticated, ]
+
+
+class CityFilterAPIView(generics.ListAPIView):
+    queryset = City.objects.all()
+    serializer_class = FilterCitySerializer
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    def get_queryset(self):
+        self.queryset = self.queryset.filter(country_id=self.request.query_params.get('country'))
+        return self.queryset
 
 
 class CityViewSet(viewsets.ModelViewSet):
     queryset = City.objects.all()
     serializer_class = CitySerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = [permissions.IsAuthenticated, ]
 
 
-class CountryViewSet(generics.ListAPIView):
+class CountryAPIView(generics.ListAPIView):
     queryset = Country.objects.all()
     serializer_class = CountrySerializer
+    permission_classes = [permissions.IsAuthenticated, ]
 
 
-class CountryDetailViewSet(generics.RetrieveUpdateAPIView):
+class CountryDetailAPIView(generics.RetrieveUpdateAPIView):
     queryset = Country.objects.all()
     serializer_class = CountryDetailSerializer
+    permission_classes = [permissions.IsAuthenticated, ]
 
 
 class CountryCreateAPIView(generics.CreateAPIView):
     serializer_class = CountryDetailSerializer
+    permission_classes = [permissions.IsAuthenticated, ]
 
 
-class CountryDelete(generics.RetrieveDestroyAPIView):
+class CountryDeleteAPIView(generics.RetrieveDestroyAPIView):
     queryset = Country.objects.filter()
     serializer_class = CountryDetailSerializer
-
-
-# Need help implementing
-class CityFilterTest(generics.ListAPIView):
-    queryset = City.objects.all()
-    serializer_class = TestFiltersSerializer
-
-    # Failed to implement custom filter by overriding the built-in method: get_queryset()
-    # def get_queryset(self):
-    #     queryset = self.queryset
-    #     country = self.request.query_params.get('country')
-    #     if country:
-    #         queryset = queryset.filter(country_id=country)
-    #     return queryset
-
-    # Failed to implement custom filter by overriding the built-in method: get()
-    # def get(self, request):
-    #     query_serializer = TestFiltersSerializer(data=self.request.query_params)
-    #     query_serializer.is_valid(raise_exception=True)
-    #     self.queryset = self.queryset.filter(country_id=query_serializer.data.get('country'))
-    #     serializer = CitySerializer(self.queryset, many=True)
-    #     return Response(serializer.data, status=status.HTTP_201_CREATED)
+    permission_classes = [permissions.IsAuthenticated, ]

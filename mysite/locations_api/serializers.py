@@ -1,6 +1,24 @@
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 from rest_framework import serializers
 from locations.models import Country, City
+
+
+class UserSerializer(serializers.ModelSerializer):
+    date_joined = serializers.ReadOnlyField()
+
+    class Meta(object):
+        model = User
+        fields = ['id', 'username', 'email',
+                  'date_joined', 'password']
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        user = User(
+            username=validated_data['username'],
+        )
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
 
 
 class CityFilterSerializer(serializers.ModelSerializer):
@@ -33,8 +51,13 @@ class CountryDetailSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# A class for writing your own filter for serializing an object
-class TestFiltersSerializer(serializers.Serializer):
-    country_id = serializers.IntegerField()
+class FilterCitySerializer(serializers.Serializer):
     name = serializers.CharField()
     country = serializers.CharField()
+    country_id = serializers.IntegerField()
+    longitude = serializers.FloatField()
+    latitude = serializers.FloatField()
+
+
+class GoogleSerializer(serializers.Serializer):
+    token = serializers.CharField()
