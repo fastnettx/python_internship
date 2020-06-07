@@ -1,4 +1,4 @@
-from rest_framework import viewsets, permissions, generics, views
+from rest_framework import viewsets, permissions, generics, views, status
 from rest_framework.permissions import AllowAny
 from django.contrib.auth.models import User
 from django.contrib.auth.base_user import BaseUserManager
@@ -31,6 +31,7 @@ class SignInGoogleAPIView(generics.GenericAPIView):
             return Response(content)
         try:
             user = User.objects.get(email=data['email'])
+            status_user = status.HTTP_200_OK
         except User.DoesNotExist:
             user = User()
             name = data['email']
@@ -38,6 +39,7 @@ class SignInGoogleAPIView(generics.GenericAPIView):
             user.password = make_password(BaseUserManager().make_random_password())
             user.email = data['email']
             user.save()
+            status_user = status.HTTP_201_CREATED
 
         token = RefreshToken.for_user(user)
         response_user = {}
@@ -45,7 +47,7 @@ class SignInGoogleAPIView(generics.GenericAPIView):
         response_user['email'] = user.email
         response_user['access_token'] = str(token.access_token)
         response_user['refresh_token'] = str(token)
-        return Response(response_user)
+        return Response(response_user, status_user)
 
 
 class CityFilterViewSet(viewsets.ModelViewSet):

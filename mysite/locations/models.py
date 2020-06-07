@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import pre_save, post_save, pre_delete, post_delete
+from django.db.models.signals import pre_save, post_save, pre_delete, post_delete, m2m_changed
 from django.dispatch import receiver
+from locations_api.tasks import send_email_when_creating, send_email_when_changing
 
 
 class Symbol(models.Model):
@@ -68,3 +69,13 @@ def decrease_counter(sender, instance, **kwargs):
 @receiver(signal=post_delete, sender=City)
 def show_remote_city(sender, instance, **kwargs):
     print("City " + instance.name + " has been deleted")
+
+
+@receiver(signal=post_save, sender=Country)
+def save_country_send_email(sender, instance, **kwargs):
+    if kwargs['created']:
+        for user_country in instance.users.all():
+            send_email_when_creating.delay(user_country.email, instance.name)
+    else:
+        for user_country in instance.users.all():
+            send_email_when_changing.delay(user_country.email, instance.name, instance.id)
